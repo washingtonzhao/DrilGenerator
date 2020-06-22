@@ -5,6 +5,19 @@ from tensorflow.keras import Sequential
 from tensorflow import keras 
 
 from Char import dataEmbed
+from tweets import readJson
+
+fileLocation = "data.json"
+
+data = readJson(fileLocation)
+
+a = dataEmbed(data, 280)
+a.embed()
+
+vocabSize = getVocabLen()
+bData = getEmbed()
+
+print(bData.shape)
 
 embeddingDim = 256
 
