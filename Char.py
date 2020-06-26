@@ -1,5 +1,6 @@
 '''Ada Toydemir | 6/21/2020 '''
 import numpy as np
+import tensorflow as tf
 '''
 This assumes that data has already been padded so that all the
 elements of the textArray are the same length. (which is nLen)
@@ -34,6 +35,7 @@ class dataEmbed:
 		return char2idx, idx2char, len(vocab)
 
 	def embed(self):
+		print(len(self._textArray))
 		for text in self._textArray:
 			textInt = np.zeros((1, self._nLen))
 			for i in range(len(text)):

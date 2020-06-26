@@ -3,29 +3,33 @@ import numpy as np
 from tensorflow.keras.layers import Embedding, GRU, Dense
 from tensorflow.keras import Sequential
 from tensorflow import keras 
+from tensorflow.keras.utils import to_categorical
 
 from Char import dataEmbed
 from tweets import readJson
 
 fileLocation = "data.json"
-
 data = readJson(fileLocation)
 
-a = dataEmbed(data, 280)
-a.embed()
+numSamples = len(data)
 
-vocabSize = getVocabLen()
-bData = getEmbed()
+# The maximum length sentence we want for a single input in characters
+seq_length = 280
+
+a = dataEmbed(data, seq_length)
+a.embed()
+vocabSize = a.getVocabLen()
+bData = a.getEmbed()
+
+print(bData.shape)
+
+bData = to_categorical(bData, num_classes=vocabSize)
 
 print(bData.shape)
 
 embeddingDim = 256
 
-### MIGHT NEED TO DO ONE-HOT ENCODING??? ###
-### website says # (batch_size, sequence_length, vocab_size) ###
 
-# The maximum length sentence we want for a single input in characters
-seq_length = 280
 #examples_per_epoch = len(text)//(seq_length+1)
 
 # Create training examples / targets
@@ -33,8 +37,6 @@ seq_length = 280
 
 #for i in char_dataset.take(5):
 #  print(idx2char[i.numpy()])
-
-#need to expand_dims or create batches (shape is batch x data x 280 (max tweet size))
 
 #has not been tested, will test when other parts of code are working (can input data)
 def getModel(vocab_size, embedding_dim, rnn_units, batch_size):
@@ -45,4 +47,4 @@ def getModel(vocab_size, embedding_dim, rnn_units, batch_size):
 	model.summary()
 	return model
 
-getModel(26, embeddingDim, 1024, 9999)
+getModel(26, embeddingDim, 1024, numSamples)
