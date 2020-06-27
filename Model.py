@@ -4,6 +4,7 @@ from tensorflow.keras.layers import Embedding, GRU, Dense
 from tensorflow.keras import Sequential
 from tensorflow import keras 
 from tensorflow.keras.utils import to_categorical
+import os
 
 from Char import dataEmbed
 from tweets import readJson
@@ -23,9 +24,21 @@ bData = a.getEmbed()
 
 print(bData.shape)
 
-bData = to_categorical(bData, num_classes=vocabSize)
+inputData = bData[:, :279]
+targetData = bData[:, 1:]
 
-print(bData.shape)
+# print(inputData[0], "     ", targetData[0])
+
+print("Input data shape: ", str(inputData.shape))
+print("Target data shape: ", str(targetData.shape))
+
+inputD = to_categorical(inputData, num_classes=vocabSize)
+targetD = to_categorical(targetData, num_classes=vocabSize)
+finalData = to_categorical(bData, num_classes=vocabSize)
+
+print(inputD.shape)
+print(targetD.shape)
+print(finalData.shape)
 
 embeddingDim = 256
 
@@ -41,10 +54,10 @@ embeddingDim = 256
 #has not been tested, will test when other parts of code are working (can input data)
 def getModel(vocab_size, embedding_dim, rnn_units, batch_size):
 	model = tf.keras.Sequential([
-    tf.keras.layers.Embededing(vocab_size, embedding_dim, batch_input_shape=[batch_size, None]),
+    tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=[batch_size, None]),
     tf.keras.layers.GRU(rnn_units, return_sequences=True, stateful=True, recurrent_initializer='glorot_uniform'),
     tf.keras.layers.Dense(vocab_size)])
-	model.summary()
+	# model.summary()
 	return model
 
 model = getModel(26, embeddingDim, 1024, numSamples)
@@ -55,3 +68,16 @@ def loss(labels, logits):
 # example_batch_loss  = loss(target_example_batch, example_batch_predictions)
 # print("Prediction shape: ", example_batch_predictions.shape, " # (batch_size, sequence_length, vocab_size)")
 # print("scalar_loss:      ", example_batch_loss.numpy().mean())
+
+model.compile(optimizer='adam', loss=loss)
+
+# Directory where the checkpoints will be saved
+checkpoint_dir = './checkpoints'
+# Name of the checkpoint files
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
+
+checkpoint_callback=tf.keras.callbacks.ModelCheckpoint(
+    filepath=checkpoint_prefix,
+    save_weights_only=True)
+
+history = model.fit(bData, epochs=10, callbacks=[checkpoint_callback])
