@@ -60,7 +60,7 @@ def getModel(vocab_size, embedding_dim, rnn_units, batch_size):
 	# model.summary()
 	return model
 
-model = getModel(26, embeddingDim, 1024, numSamples)
+model = getModel(vocabSize, embeddingDim, 1024, numSamples)
 
 def loss(labels, logits):
   return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)
