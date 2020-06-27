@@ -41,10 +41,17 @@ embeddingDim = 256
 #has not been tested, will test when other parts of code are working (can input data)
 def getModel(vocab_size, embedding_dim, rnn_units, batch_size):
 	model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=[batch_size, None]),
+    tf.keras.layers.Embededing(vocab_size, embedding_dim, batch_input_shape=[batch_size, None]),
     tf.keras.layers.GRU(rnn_units, return_sequences=True, stateful=True, recurrent_initializer='glorot_uniform'),
     tf.keras.layers.Dense(vocab_size)])
 	model.summary()
 	return model
 
-getModel(26, embeddingDim, 1024, numSamples)
+model = getModel(26, embeddingDim, 1024, numSamples)
+
+def loss(labels, logits):
+  return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)
+
+# example_batch_loss  = loss(target_example_batch, example_batch_predictions)
+# print("Prediction shape: ", example_batch_predictions.shape, " # (batch_size, sequence_length, vocab_size)")
+# print("scalar_loss:      ", example_batch_loss.numpy().mean())
