@@ -13,6 +13,7 @@ def readJson(fileLoc):
             text += padding
         if(len(text) <= 280):
             dataList.append(text)
+    print("Done reading JSON.")
     return dataList
 
 def readJsonBlock(fileLoc):
@@ -27,6 +28,7 @@ def readJsonBlock(fileLoc):
             text += padding
         if(len(text) <= 280):
             data += text
+    print("Done reading JSON as a single block.")
     return data
 
 if __name__ == '__main__':
