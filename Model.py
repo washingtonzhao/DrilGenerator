@@ -7,10 +7,10 @@ from tensorflow.keras.utils import to_categorical
 import os
 
 from Char import dataEmbed
-from tweets import readJson
+from tweets import readJson, readJsonBlock
 
 fileLocation = "data.json"
-data = readJson(fileLocation)
+data = readJsonBlock(fileLocation)
 
 numSamples = len(data)
 
