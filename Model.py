@@ -12,19 +12,19 @@ from tweets import readJson, readJsonBlock
 fileLocation = "data.json"
 data = readJsonBlock(fileLocation)
 
+#temporary limitation of amount of data being used
+data = data[:280*64]
+
 numSamples = len(data)
 
 # The maximum length sentence we want for a single input in characters
-seq_length = 280
+seq_length = 279
 
 a = dataEmbed(data, seq_length)
 a.embed()
 idx2char = a.getIDX2CHAR()
 vocabSize = a.getVocabLen()
 bData = a.getEmbed()
-
-
-examples_per_epoch = len(bData)//(seq_length+1)
 
 # Create training examples / targets
 char_dataset = tf.data.Dataset.from_tensor_slices(bData)
@@ -38,7 +38,7 @@ def split_input_target(chunk):
 
 dataset = sequences.map(split_input_target)
 
-BATCH_SIZE = 280
+BATCH_SIZE = int((numSamples/280)/4)
 BUFFER_SIZE = 10000
 
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
